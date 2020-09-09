@@ -1,0 +1,53 @@
+steps:
+  - id: 'tg hclfmt check'
+    name: 'gcr.io/$PROJECT_ID/terragrunt:$_TERRAFORM_VERSION-$_TERRAGRUNT_VERSION'
+    args:
+      - 'hclfmt'
+      - '--terragrunt-check'
+    dir: 'examples'
+    env:
+      - 'TF_IN_AUTOMATION=1'
+      - 'TF_INPUT=0'
+      - 'TF_PLUGIN_CACHE_DIR=/workspace/tf_plugin_cache'
+      - 'TF_VAR_project_id=$PROJECT_ID'
+    wait_for:
+      - '-'
+
+  - id: 'tg validate-all'
+    name: 'gcr.io/$PROJECT_ID/terragrunt:$_TERRAFORM_VERSION-$_TERRAGRUNT_VERSION'
+    args:
+      - 'validate-all'
+    env:
+      - 'TF_IN_AUTOMATION=1'
+      - 'TF_INPUT=0'
+      - 'TF_PLUGIN_CACHE_DIR=/workspace/tf_plugin_cache'
+      - 'TF_VAR_project_id=$PROJECT_ID'
+    wait_for:
+      - 'tg hclfmt check'
+
+  - id: 'tf fmt check'
+    name: 'gcr.io/$PROJECT_ID/terraform:$_TERRAFORM_VERSION'
+    args:
+      - 'fmt'
+      - '-check'
+      - '-recursive'
+    env:
+      - 'TF_IN_AUTOMATION=1'
+      - 'TF_INPUT=0'
+      - 'TF_PLUGIN_CACHE_DIR=/workspace/tf_plugin_cache'
+      - 'TF_VAR_project_id=$PROJECT_ID'
+    wait_for:
+      - 'tg validate-all'
+
+  - id: 'tg plan-all'
+    name: 'gcr.io/$PROJECT_ID/terragrunt:$_TERRAFORM_VERSION-$_TERRAGRUNT_VERSION'
+    args:
+      - 'plan-all'
+    dir: 'examples'
+    env:
+      - 'TF_IN_AUTOMATION=1'
+      - 'TF_INPUT=0'
+      - 'TF_PLUGIN_CACHE_DIR=/workspace/tf_plugin_cache'
+      - 'TF_VAR_project_id=$PROJECT_ID'
+    wait_for:
+      - 'tf fmt check'
