@@ -1,4 +1,13 @@
+---
 steps:
+  - id: 'yamllint'
+    name: 'cytopia/yamllint'
+    args:
+      - '-s'
+      - '.'
+    wait_for:
+      - '-'
+
   - id: 'tg hclfmt check'
     name: 'gcr.io/$PROJECT_ID/terragrunt:$_TERRAFORM_VERSION-$_TERRAGRUNT_VERSION'
     args:
