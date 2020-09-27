@@ -8,6 +8,16 @@ steps:
     wait_for:
       - '-'
 
+  - id: 'golangci-lint'
+    name: 'golangci/golangci-lint:v1.31.0-alpine'
+    entrypoint: '/usr/bin/golangci-lint'
+    args:
+      - '-v'
+      - 'run'
+    dir: 'test'
+    wait_for:
+      - '-'
+
   - id: 'tg hclfmt check'
     name: 'gcr.io/$PROJECT_ID/terragrunt:$_TERRAFORM_VERSION-$_TERRAGRUNT_VERSION'
     args:
