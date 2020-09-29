@@ -19,7 +19,8 @@ steps:
       - '-'
 
   - id: 'tg hclfmt check'
-    name: 'gcr.io/$PROJECT_ID/terragrunt:$_TERRAFORM_VERSION-$_TERRAGRUNT_VERSION'
+    name: 'eu.gcr.io/$PROJECT_ID/go-terraform-terragrunt:$_GOLANG_VERSION-$_TERRAFORM_VERSION-$_TERRAGRUNT_VERSION'
+    entrypoint: "terragrunt"
     args:
       - 'hclfmt'
       - '--terragrunt-check'
@@ -33,7 +34,8 @@ steps:
       - '-'
 
   - id: 'tg validate-all'
-    name: 'gcr.io/$PROJECT_ID/terragrunt:$_TERRAFORM_VERSION-$_TERRAGRUNT_VERSION'
+    name: 'eu.gcr.io/$PROJECT_ID/go-terraform-terragrunt:$_GOLANG_VERSION-$_TERRAFORM_VERSION-$_TERRAGRUNT_VERSION'
+    entrypoint: "terragrunt"
     args:
       - 'validate-all'
     env:
@@ -45,7 +47,8 @@ steps:
       - 'tg hclfmt check'
 
   - id: 'tf fmt check'
-    name: 'gcr.io/$PROJECT_ID/terraform:$_TERRAFORM_VERSION'
+    name: 'eu.gcr.io/$PROJECT_ID/go-terraform-terragrunt:$_GOLANG_VERSION-$_TERRAFORM_VERSION-$_TERRAGRUNT_VERSION'
+    entrypoint: "terraform"
     args:
       - 'fmt'
       - '-check'
@@ -59,7 +62,8 @@ steps:
       - 'tg validate-all'
 
   - id: 'tg plan-all'
-    name: 'gcr.io/$PROJECT_ID/terragrunt:$_TERRAFORM_VERSION-$_TERRAGRUNT_VERSION'
+    name: 'eu.gcr.io/$PROJECT_ID/go-terraform-terragrunt:$_GOLANG_VERSION-$_TERRAFORM_VERSION-$_TERRAGRUNT_VERSION'
+    entrypoint: "terragrunt"
     args:
       - 'plan-all'
     dir: 'examples'
