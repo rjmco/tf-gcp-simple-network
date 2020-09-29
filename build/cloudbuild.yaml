@@ -74,3 +74,15 @@ steps:
       - 'TF_VAR_project_id=$PROJECT_ID'
     wait_for:
       - 'tf fmt check'
+
+  - id: 'terratest'
+    name: 'eu.gcr.io/$PROJECT_ID/go-terraform-terragrunt:$_GOLANG_VERSION-$_TERRAFORM_VERSION-$_TERRAGRUNT_VERSION'
+    entrypoint: "go"
+    args:
+      - 'test'
+      - '-v'
+    dir: 'test'
+    env:
+      - 'TF_VAR_project_id=$PROJECT_ID'
+    wait_for:
+      - 'tg plan-all'
