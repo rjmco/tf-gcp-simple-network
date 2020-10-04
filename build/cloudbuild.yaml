@@ -33,6 +33,25 @@ steps:
     wait_for:
       - '-'
 
+  - id: "cloud-build scripts shellcheck"
+    name: "eu.gcr.io/$PROJECT_ID/shellcheck"
+    entrypoint: "bash"
+    args:
+      - "-c"
+      - "shellcheck *"
+    dir: "scripts"
+    wait_for: 
+      - "-"
+
+  - id: 'mkdir tf_plugin_cache'
+    name: 'busybox'
+    entrypoint: "mkdir"
+    args:
+      - '-p'
+      - '/workspace/tf_plugin_cache'
+    wait_for:
+      - '-'
+
   - id: 'tg validate-all'
     name: 'eu.gcr.io/$PROJECT_ID/go-terraform-terragrunt:$_GOLANG_VERSION-$_TERRAFORM_VERSION-$_TERRAGRUNT_VERSION'
     entrypoint: "terragrunt"
@@ -44,6 +63,7 @@ steps:
       - 'TF_PLUGIN_CACHE_DIR=/workspace/tf_plugin_cache'
       - 'TF_VAR_project_id=$PROJECT_ID'
     wait_for:
+      - 'mkdir tf_plugin_cache'
       - 'tg hclfmt check'
 
   - id: 'tf fmt check'

@@ -1,8 +1,11 @@
 # tf-gcp-simple-network
-Deploys a simple GCP VPC network.
+Terraform module which deploys a simple GCP VPC network.
 
-This module was created with the purpose of testing terragrunt and testing
+This module was created with the purpose of testing terragrunt and terragrunt
 technologies and therefore it is very limited in functionality or flexibility.
+
+It relies on Google Cloud Build to automate checks and tests both locally and
+centrally in a Google Cloud Project. 
 
 It deploys the following resources into a given GCP project:
 - 1x VPC network
@@ -12,6 +15,68 @@ It deploys the following resources into a given GCP project:
 ## Usage
 
 Refer to the examples under [examples/](examples)
+
+## Testing
+
+Detailing how to test this module centrally on a Google Cloud Platform project
+is outside the scope of this README.md file. Nonetheless, the
+[cloudbuild.yaml](build/cloudbuild.yaml) file should be the same used on both
+tests performed locally on the developer's wworkspace as well as the central
+tests performed on a GCP project.
+
+### Testing locally
+
+#### Requirements
+
+The following software needs to be installed on the developer's workstation:
+- Docker Workstation
+- Google Cloud SDK (aka `gcloud`)
+
+To install Docker Workstation, please follow docker's official 
+[documentation](https://docs.docker.com/get-docker/) or use your operating
+system's package manager (such as `yum` for RH based linux distributions or
+`brew` for macOS).
+
+To install Google Cloud SDK, either use a package manager as referenced above
+or follow Google's [documentation](https://cloud.google.com/sdk/docs/install)
+on the subject. 
+
+#### Setup Google Cloud SDK to run Cloud Build locally
+
+The following instructions are based on
+[this document](https://cloud.google.com/cloud-build/docs/build-debug-locally)
+feel free to follow it for a more detailed understanding of the following steps.
+
+1. install and configure the Docker credential helper for Cloud Build
+
+```
+gcloud components install docker-credential-gcr
+gcloud auth configure-docker
+```
+
+2. Install Google Cloud Build's local builder:
+
+```
+gcloud components install cloud-build-local
+```
+
+#### Run the Cloud Build tests locally
+
+1. Create a `local_env.sh` file with the following content (replace the values
+accordingly):
+
+```
+export GOLANG_VERSION=<version>
+export TERRAFORM_VERSION=<version>
+export TERRAGRUNT_VERSION=<version>
+```
+
+2. Source the new variable file and execute the `scripts/local_test.bash` file:
+
+```
+source local_env.sh
+./scripts/local_test.bash
+```
 
 ## Requirements
 
