@@ -1,5 +1,5 @@
 // This package tests the tf-gcp-simple-network simple_example example.
-// All tests rely on TF_VAR_project_id existing on the environment.
+// All tests rely on TF_VAR_project_id being set on the environment.
 package test
 
 import (
@@ -14,8 +14,8 @@ func TestSimpleExample(t *testing.T) {
 	t.Parallel()
 
 	terraformOptions := &terraform.Options{
-		TerraformBinary: "terragrunt",                 // required when using Tg* methods.
-		TerraformDir:    "../examples/simple_example", // pass the example's base directory as an option
+		TerraformBinary: "terragrunt",         // required when using Tg* methods.
+		TerraformDir:    "../examples/simple", // pass the example's base directory as an option
 	}
 
 	// make sure the infrastructure is destroyed in the end by terragrunt
