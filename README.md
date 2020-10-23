@@ -18,13 +18,15 @@ Refer to the examples under [examples/](examples)
 
 ## Requirements
 
-No requirements.
+| Name | Version |
+|------|---------|
+| google | ~> 3.0 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| google | 3 |
+| google | ~> 3.0 |
 
 ## Inputs
 
