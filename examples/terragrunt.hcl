@@ -1,5 +1,5 @@
 locals {
-  google_providers_version = "3.27.0"
+  google_providers_version = "3.44.0"
 }
 
 generate "providers" {
