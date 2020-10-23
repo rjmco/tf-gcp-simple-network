@@ -367,5 +367,6 @@ fabric.properties
 .idea/caches/build_file_checksums.ser
 
 # Custom entries
+.idea
 local_env.sh
 tg_gen_sensitive_*.tf
