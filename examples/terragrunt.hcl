@@ -16,18 +16,3 @@ terraform {
 }
 EOF
 }
-
-generate "uniq_id" {
-  path      = "tg_gen_uniq_id.tf"
-  if_exists = "overwrite_terragrunt"
-  contents  = <<EOF
-resource "random_string" "uniq_id" {
-  length = 6
-
-  lower   = true
-  number  = true
-  special = false
-  upper   = false
-}
-EOF
-}
