@@ -25,8 +25,8 @@ variable "project_id" {
   type        = string
 
   validation {
-    condition     = can(regex("^(?:[a-z](?:[-a-z0-9]{4,27}[a-z0-9])?)$", var.project_id))
-    error_message = "The project ID must be a match of regex '^(?:[a-z](?:[-a-z0-9]{4,27}[a-z0-9])?)'."
+    condition     = can(regex("^(?:[a-z][-a-z0-9]{4}(?:[-a-z0-9]{0,23})?[a-z0-9])$", var.project_id))
+    error_message = "The project ID must be a match of regex '^(?:[a-z][-a-z0-9]{4}(?:[-a-z0-9]{0,23})?[a-z0-9])$'."
   }
 }
 
