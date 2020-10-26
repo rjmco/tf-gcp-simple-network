@@ -3,18 +3,17 @@
 package test
 
 import (
-	"crypto/rand"
-	"encoding/hex"
-	"fmt"
+	"os"
 	"testing"
 
+	"github.com/gruntwork-io/terratest/modules/gcp"
+	"github.com/gruntwork-io/terratest/modules/random"
 	"github.com/gruntwork-io/terratest/modules/terraform"
 )
 
 const (
-	badRegion      = "europe"
-	goodSubnetCidr = "192.168.57.0/24"
-	goodRegion     = "us-east1"
+	projectIDEnvVar = "TF_VAR_project_id"
+	subnetCidr      = "192.168.57.0/24"
 )
 
 // getBadComputeResourceNames returns a slice of strings with bad compute resource names.
@@ -75,25 +74,26 @@ func TestCustomizedExampleWithGoodInputs(t *testing.T) {
 	// signal that this test should be run in parallel with other parallel tests
 	t.Parallel()
 
-	randomBytes := make([]byte, 2)
-	if _, err := rand.Read(randomBytes); err != nil {
-		fmt.Println("error:", err)
-	}
+	// get the project ID from the TF_VAR_project_id environment variable
+	p := os.Getenv(projectIDEnvVar)
 
-	// generate a valid 4 character GCP resource name suffix
-	suffix := hex.EncodeToString(randomBytes)
+	// generate good GCP resource names
+	networkName := gcp.RandomValidGcpName()
+	regionName := gcp.GetRandomRegion(t, p, nil, nil)
+	routerName := gcp.RandomValidGcpName()
+	subnetworkName := gcp.RandomValidGcpName()
 
-	// Set terragrunt options, including customized variables
+	// set terragrunt options, including customized variables
 	terraformOptions := &terraform.Options{
 		TerraformBinary: "terragrunt",             // required when using Tg* methods.
 		TerraformDir:    "../examples/customized", // pass the example's base directory as an option
 
 		Vars: map[string]interface{}{
-			"nat_router_name":          fmt.Sprintf("nat-router-%s", suffix),
-			"network_name":             fmt.Sprintf("network-%s", suffix),
-			"region":                   goodRegion,
-			"subnetwork_ip_cidr_range": goodSubnetCidr,
-			"subnetwork_name":          fmt.Sprintf("subnet-%s", suffix),
+			"nat_router_name":          routerName,
+			"network_name":             networkName,
+			"region":                   regionName,
+			"subnetwork_ip_cidr_range": subnetCidr,
+			"subnetwork_name":          subnetworkName,
 		},
 	}
 
@@ -147,7 +147,7 @@ func TestCustomizedExampleWithBadInputs(t *testing.T) {
 	})
 	t.Run("region", func(t *testing.T) {
 		t.Parallel()
-		testBadVariableValues(t, "region", []string{badRegion})
+		testBadVariableValues(t, "region", []string{random.UniqueId()})
 	})
 	t.Run("subnetwork_name", func(t *testing.T) {
 		t.Parallel()
