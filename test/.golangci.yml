@@ -3,3 +3,5 @@ linters:
   disable:
     - testpackage  # there isn't a need to suffix test packages with _test
   enable-all: true
+run:
+  timeout: 5m  # to avoid package downloads to trigger timeouts
