@@ -7,6 +7,7 @@ import (
 	"testing"
 
 	"github.com/gruntwork-io/terratest/modules/gcp"
+	"github.com/gruntwork-io/terratest/modules/logger"
 	"github.com/gruntwork-io/terratest/modules/random"
 	"github.com/gruntwork-io/terratest/modules/terraform"
 )
@@ -71,11 +72,13 @@ func TestDefaultsExample(t *testing.T) {
 
 // Test network deployment with good customized values.
 func TestCustomizedExampleWithGoodInputs(t *testing.T) {
-	// signal that this test should be run in parallel with other parallel tests
-	t.Parallel()
+	t.Parallel() // signal that this test should be run in parallel with other parallel tests
 
 	// get the project ID from the TF_VAR_project_id environment variable
 	p := os.Getenv(projectIDEnvVar)
+	if p == "" {
+		t.Fatal(projectIDEnvVar, " environment variable does not exist.")
+	}
 
 	// generate good GCP resource names
 	networkName := gcp.RandomValidGcpName()
@@ -102,6 +105,33 @@ func TestCustomizedExampleWithGoodInputs(t *testing.T) {
 
 	// use terragrunt to deploy the example with no custom variables
 	terraform.TgApplyAll(t, terraformOptions)
+
+	// verify that the resources were created as specified
+	s := gcp.NewComputeService(t)
+
+	if _, err := s.Networks.Get(p, networkName).Do(); err != nil {
+		t.Fatalf("network `%s` was not found... %v", networkName, err)
+	} else {
+		logger.Logf(t, "network `%s` found as expected.", networkName)
+	}
+
+	if _, err := s.Routers.Get(p, regionName, routerName).Do(); err != nil {
+		t.Fatalf("router `%s` on region `%s` was not found... %v", routerName, regionName, err)
+	} else {
+		logger.Logf(t, "router `%s` on region `%s` was found as expected.", routerName, regionName)
+	}
+
+	if subnet, err := s.Subnetworks.Get(p, regionName, subnetworkName).Do(); err != nil {
+		t.Fatalf("subnetwork `%s` on region `%s` was not found... %v", subnetworkName, regionName, err)
+	} else {
+		logger.Logf(t, "subnetwork `%s` on region `%s` was found as expected.", subnetworkName, regionName)
+		if subnet.IpCidrRange != subnetCidr {
+			t.Fatalf("subnetwork `%s` doesn't have wanted `%s` CIDR range. Got `%s` instead.", subnetworkName, subnetCidr,
+				subnet.IpCidrRange)
+		} else {
+			logger.Logf(t, "subnetwork `%s` has expected `%s` CIDR range.", subnetworkName, subnetCidr)
+		}
+	}
 }
 
 // Test deployment with customized bad input values fail.
