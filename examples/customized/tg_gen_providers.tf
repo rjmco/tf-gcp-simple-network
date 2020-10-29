@@ -13,7 +13,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# The provider version(s) on this file are automatically upgraded by dependabot
 terraform {
   required_providers {
     google = {
