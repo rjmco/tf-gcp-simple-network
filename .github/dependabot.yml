@@ -1,13 +1,6 @@
 ---
 version: 2
 updates:
-  # Enable dependabot to check for new terraform provider version(s) for examples,
-  # this makes sure that the examples are known to run with the latest provider versions
-  - package-ecosystem: terraform
-    directory: /examples/tg_files/
-    schedule:
-      interval: daily
-
   # Enable dependabot to check for terratest upgrades
   - package-ecosystem: gomod
     directory: /test/
