@@ -1,7 +1,7 @@
 # tf-gcp-simple-network
 Terraform module which deploys a simple GCP VPC network.
 
-This module was created with the purpose of testing terragrunt and terragrunt
+This module was created with the purpose of testing terragrunt and terratest
 technologies and therefore it is very limited in functionality or flexibility.
 
 It relies on Google Cloud Build to automate checks and tests both locally and
