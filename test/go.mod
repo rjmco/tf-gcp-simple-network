@@ -16,4 +16,4 @@ module github.com/rjmco/tf-gcp-simple-network/test
 
 go 1.15
 
-require github.com/gruntwork-io/terratest v0.32.21
+require github.com/gruntwork-io/terratest v0.41.2
